@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4K Video Overlay Template Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f7fafc;
+            border-radius: 15px;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .control-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .checkbox-label {
+            text-transform: none !important;
+            font-size: 1em !important;
+            letter-spacing: normal !important;
+        }
+        
+        .checkbox-label input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.2);
+            accent-color: #667eea;
+        }
+        
+        input[type="range"], input[type="color"] {
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            outline: none;
+        }
+        
+        input[type="range"] {
+            height: 6px;
+            background: #e2e8f0;
+            -webkit-appearance: none;
+        }
+        
+        input[type="color"] {
+            cursor: pointer;
+            background: none;
+        }
+        
+        input[type="color"]::-webkit-color-swatch {
+            border-radius: 6px;
+            border: none;
+        }
+        
+        input[type="color"]::-moz-color-swatch {
+            border-radius: 6px;
+            border: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .value-display {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-top: 5px;
+        }
+        
+        .preview-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .preview {
+            display: inline-block;
+            max-width: 100%;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGElEQVQYlWPY//8/AzYwKjGGFI7C4S4cADNODwDSjOHXAAAAAElFTkSuQmCC') repeat;
+        }
+        
+        .download-section {
+            text-align: center;
+            padding: 25px;
+            background: #667eea;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(56, 161, 105, 0.4);
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(56, 161, 105, 0.5);
+        }
+        
+        .download-btn:active {
+            transform: translateY(0);
+        }
+        
+        .info {
+            color: white;
+            margin-top: 15px;
+            opacity: 0.9;
+        }
+        
+        .layout-info {
+            text-align: center;
+            color: #718096;
+            margin: 15px 0;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>4K Video Overlay Generator</h1>
+        <p class="subtitle">Create optimized PNG templates with maximum-sized 16:9 transparent cutouts and flexible layouts</p>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="cutouts">Number of Cutouts</label>
+                <input type="range" id="cutouts" min="1" max="12" value="4">
+                <div class="value-display" id="cutoutsValue">4</div>
+            </div>
+            
+            <div class="control-group">
+                <label for="cornerRadius">Corner Radius (px)</label>
+                <input type="range" id="cornerRadius" min="0" max="200" value="50">
+                <div class="value-display" id="cornerRadiusValue">50px</div>
+            </div>
+            
+            <div class="control-group">
+                <label for="borderSpacing">Border & Spacing (px)</label>
+                <input type="range" id="borderSpacing" min="20" max="300" value="100">
+                <div class="value-display" id="borderSpacingValue">100px</div>
+            </div>
+            
+            <div class="control-group">
+                <label for="templateColor">Template Color</label>
+                <input type="color" id="templateColor" value="#ffffff">
+                <div class="value-display" id="templateColorValue">#ffffff</div>
+            </div>
+            
+            <div class="control-group">
+                <label for="symmetryMode" style="text-transform: none;" class="checkbox-label">
+                    <input type="checkbox" id="symmetryMode" checked>
+                    Force Symmetry
+                </label>
+                <div class="value-display" style="font-size: 0.9em; opacity: 0.8; margin-top: 5px;">
+                    When disabled, allows asymmetric layouts for odd numbers
+                </div>
+            </div>
+        </div>
+        
+        <div class="layout-info" id="layoutInfo">Layout: 2×2 Grid (Optimized for maximum cutout size)</div>
+        
+        <div class="preview-container">
+            <canvas id="preview" class="preview" width="384" height="216"></canvas>
+        </div>
+        
+        <div class="download-section">
+            <button class="download-btn" onclick="downloadTemplate()">
+                Download 4K PNG Template
+            </button>
+            <div class="info">
+                Resolution: 3840×2160 (4K UHD)<br>
+                Format: PNG with transparency<br>
+                Cutouts optimized for maximum size (16:9 ratio)
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const cutoutsSlider = document.getElementById('cutouts');
+        const cornerRadiusSlider = document.getElementById('cornerRadius');
+        const borderSpacingSlider = document.getElementById('borderSpacing');
+        const templateColorPicker = document.getElementById('templateColor');
+        const symmetryModeCheckbox = document.getElementById('symmetryMode');
+        const cutoutsValue = document.getElementById('cutoutsValue');
+        const cornerRadiusValue = document.getElementById('cornerRadiusValue');
+        const borderSpacingValue = document.getElementById('borderSpacingValue');
+        const templateColorValue = document.getElementById('templateColorValue');
+        const layoutInfo = document.getElementById('layoutInfo');
+        const previewCanvas = document.getElementById('preview');
+        const previewCtx = previewCanvas.getContext('2d');
+        
+        // 4K dimensions
+        const FULL_WIDTH = 3840;
+        const FULL_HEIGHT = 2160;
+        const ASPECT_RATIO = 16 / 9;
+        
+        // Preview dimensions (scaled down)
+        const PREVIEW_WIDTH = 384;
+        const PREVIEW_HEIGHT = 216;
+        const SCALE = PREVIEW_WIDTH / FULL_WIDTH;
+        
+        function getAsymmetricArrangements(numCutouts) {
+            const arrangements = [];
+            
+            // Generate all possible row distributions
+            function generateDistributions(remaining, maxPerRow, currentDist = []) {
+                if (remaining === 0) {
+                    if (currentDist.length > 0) {
+                        arrangements.push([...currentDist]);
+                    }
+                    return;
+                }
+                
+                for (let i = Math.min(remaining, maxPerRow); i >= 1; i--) {
+                    currentDist.push(i);
+                    generateDistributions(remaining - i, i, currentDist);
+                    currentDist.pop();
+                }
+            }
+            
+            generateDistributions(numCutouts, numCutouts);
+            return arrangements;
+        }
+        
+        function getOptimalGrid(numCutouts, canvasWidth, canvasHeight, padding, forceSymmetry = true) {
+            if (numCutouts === 1) return { 
+                arrangement: [1], 
+                cutoutSize: 0, 
+                width: 0, 
+                height: 0,
+                description: 'Single'
+            };
+            
+            let bestArrangement = { arrangement: [numCutouts], cutoutSize: 0 };
+            const arrangements = [];
+            
+            if (forceSymmetry) {
+                // Only symmetric arrangements (rectangular grids)
+                for (let cols = 1; cols <= numCutouts; cols++) {
+                    if (numCutouts % cols === 0) {
+                        const rows = numCutouts / cols;
+                        const rowDistribution = new Array(rows).fill(cols);
+                        arrangements.push(rowDistribution);
+                    }
+                }
+            } else {
+                // Include asymmetric arrangements
+                const symmetricArrangements = [];
+                for (let cols = 1; cols <= numCutouts; cols++) {
+                    if (numCutouts % cols === 0) {
+                        const rows = numCutouts / cols;
+                        const rowDistribution = new Array(rows).fill(cols);
+                        symmetricArrangements.push(rowDistribution);
+                    }
+                }
+                
+                const asymmetricArrangements = getAsymmetricArrangements(numCutouts);
+                arrangements.push(...symmetricArrangements, ...asymmetricArrangements);
+            }
+            
+            // Test each arrangement
+            for (const arrangement of arrangements) {
+                const rows = arrangement.length;
+                const maxCols = Math.max(...arrangement);
+                
+                // Calculate available space
+                const availableWidth = canvasWidth - (padding * 2);
+                const availableHeight = canvasHeight - (padding * 2);
+                
+                // Calculate spacing
+                const horizontalSpacing = (maxCols - 1) * padding * 0.5;
+                const verticalSpacing = (rows - 1) * padding * 0.5;
+                
+                const maxCutoutWidth = (availableWidth - horizontalSpacing) / maxCols;
+                const maxCutoutHeight = (availableHeight - verticalSpacing) / rows;
+                
+                // Maintain 16:9 aspect ratio
+                let cutoutWidth = maxCutoutWidth;
+                let cutoutHeight = cutoutWidth * (9 / 16);
+                
+                if (cutoutHeight > maxCutoutHeight) {
+                    cutoutHeight = maxCutoutHeight;
+                    cutoutWidth = cutoutHeight * (16 / 9);
+                }
+                
+                const cutoutSize = cutoutWidth * cutoutHeight;
+                
+                if (cutoutSize > bestArrangement.cutoutSize) {
+                    bestArrangement = {
+                        arrangement,
+                        cutoutSize,
+                        width: cutoutWidth,
+                        height: cutoutHeight,
+                        rows: rows,
+                        maxCols: maxCols,
+                        description: arrangement.length === 1 ? `${arrangement[0]}×1` : 
+                                   arrangement.every(x => x === arrangement[0]) ? `${arrangement[0]}×${arrangement.length}` :
+                                   `Asymmetric (${arrangement.join('+')})` 
+                    };
+                }
+            }
+            
+            return bestArrangement;
+        }
+        
+        function updateLayoutInfo() {
+            const numCutouts = parseInt(cutoutsSlider.value);
+            const forceSymmetry = symmetryModeCheckbox.checked;
+            const borderSpacing = parseInt(borderSpacingSlider.value);
+            
+            if (numCutouts === 1) {
+                layoutInfo.textContent = 'Layout: Single Centered Cutout (16:9) - Maximized Size';
+            } else {
+                // Calculate optimal grid for display
+                const grid = getOptimalGrid(numCutouts, FULL_WIDTH, FULL_HEIGHT, borderSpacing, forceSymmetry);
+                layoutInfo.textContent = `Layout: ${grid.description} - Optimized for maximum cutout size`;
+            }
+        }
+        
+        function drawRoundedRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+        
+        function generateTemplate(isPreview = true) {
+            const numCutouts = parseInt(cutoutsSlider.value);
+            const cornerRadius = parseInt(cornerRadiusSlider.value);
+            const borderSpacing = parseInt(borderSpacingSlider.value);
+            const templateColor = templateColorPicker.value;
+            const forceSymmetry = symmetryModeCheckbox.checked;
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            if (isPreview) {
+                canvas.width = PREVIEW_WIDTH;
+                canvas.height = PREVIEW_HEIGHT;
+            } else {
+                canvas.width = FULL_WIDTH;
+                canvas.height = FULL_HEIGHT;
+            }
+            
+            const scale = isPreview ? SCALE : 1;
+            const scaledRadius = cornerRadius * scale;
+            const padding = borderSpacing * scale;
+            
+            // Fill with template color
+            ctx.fillStyle = templateColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Calculate optimal grid arrangement for full size, then scale
+            const fullSizeGrid = getOptimalGrid(numCutouts, FULL_WIDTH, FULL_HEIGHT, borderSpacing, forceSymmetry);
+            const cutoutWidth = fullSizeGrid.width * scale;
+            const cutoutHeight = fullSizeGrid.height * scale;
+            
+            // Calculate the total dimensions needed for the arrangement
+            const maxCols = fullSizeGrid.maxCols;
+            const rows = fullSizeGrid.rows;
+            const totalWidth = maxCols * cutoutWidth + (maxCols - 1) * padding * 0.5;
+            const totalHeight = rows * cutoutHeight + (rows - 1) * padding * 0.5;
+            
+            // Center the entire arrangement
+            const startX = (canvas.width - totalWidth) / 2;
+            const startY = (canvas.height - totalHeight) / 2;
+            
+            // Set composite operation to cut out
+            ctx.globalCompositeOperation = 'destination-out';
+            
+            // Draw cutouts based on the arrangement
+            let cutoutIndex = 0;
+            for (let row = 0; row < fullSizeGrid.arrangement.length; row++) {
+                const cutsInThisRow = fullSizeGrid.arrangement[row];
+                const rowStartX = startX + (maxCols - cutsInThisRow) * (cutoutWidth + padding * 0.5) / 2;
+                
+                for (let col = 0; col < cutsInThisRow; col++) {
+                    const x = rowStartX + col * (cutoutWidth + padding * 0.5);
+                    const y = startY + row * (cutoutHeight + padding * 0.5);
+                    
+                    drawRoundedRect(ctx, x, y, cutoutWidth, cutoutHeight, scaledRadius);
+                    ctx.fill();
+                    cutoutIndex++;
+                }
+            }
+            
+            return canvas;
+        }
+        
+        function updatePreview() {
+            const templateCanvas = generateTemplate(true);
+            
+            // Clear preview canvas
+            previewCtx.clearRect(0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT);
+            
+            // Draw checkerboard pattern
+            const checkSize = 10;
+            for (let x = 0; x < PREVIEW_WIDTH; x += checkSize) {
+                for (let y = 0; y < PREVIEW_HEIGHT; y += checkSize) {
+                    previewCtx.fillStyle = ((x / checkSize) + (y / checkSize)) % 2 === 0 ? '#f0f0f0' : '#e0e0e0';
+                    previewCtx.fillRect(x, y, checkSize, checkSize);
+                }
+            }
+            
+            // Draw template
+            previewCtx.drawImage(templateCanvas, 0, 0);
+        }
+        
+        function downloadTemplate() {
+            const canvas = generateTemplate(false);
+            
+            // Create download link
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                const numCutouts = cutoutsSlider.value;
+                const cornerRadius = cornerRadiusSlider.value;
+                const borderSpacing = borderSpacingSlider.value;
+                const symmetry = symmetryModeCheckbox.checked ? 'sym' : 'asym';
+                
+                a.href = url;
+                a.download = `video-overlay-${numCutouts}cuts-${cornerRadius}radius-${borderSpacing}border-${symmetry}-4K.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        }
+        
+        // Event listeners
+        cutoutsSlider.addEventListener('input', function() {
+            cutoutsValue.textContent = this.value;
+            updateLayoutInfo();
+            updatePreview();
+        });
+        
+        cornerRadiusSlider.addEventListener('input', function() {
+            cornerRadiusValue.textContent = this.value + 'px';
+            updatePreview();
+        });
+        
+        borderSpacingSlider.addEventListener('input', function() {
+            borderSpacingValue.textContent = this.value + 'px';
+            updateLayoutInfo();
+            updatePreview();
+        });
+        
+        templateColorPicker.addEventListener('input', function() {
+            templateColorValue.textContent = this.value;
+            updatePreview();
+        });
+        
+        symmetryModeCheckbox.addEventListener('change', function() {
+            updateLayoutInfo();
+            updatePreview();
+        });
+        
+        // Initial render
+        borderSpacingValue.textContent = borderSpacingSlider.value + 'px';
+        updateLayoutInfo();
+        updatePreview();
+    </script>
+</body>
+</html>
